@@ -36,10 +36,13 @@ function* loginRequest({ payload }) {
   }
 }
 
-// Salvando o token para enviar pelo header
+// Verificando se existe um token para enviar pelo header
 function persistRehydrate({ payload }) {
+  // Tentando pegar o token se não tiver retorna uma string vazia
   const token = get(payload, "auth.token", "");
+  // Verificando se o token foi pego se não for retorna
   if (!token) return;
+  // Enviando o token pelo header
   axios.defaults.headers.Authorization = `Bearer ${token}`;
 }
 
