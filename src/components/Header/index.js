@@ -1,26 +1,27 @@
 import React from "react";
 import { FaHome, FaSignInAlt, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
-// Pegando os dados de dentro do estado
-import { useSelector } from "react-redux";
 
 import { Nav } from "./styled";
 
-export default function Header() {
-  const botaoClicado = useSelector((state) => state.example.botaoClicado);
+function refreshPage() {
+  setTimeout(() => {
+    window.location.reload(false);
+  }, 1);
+}
 
+export default function Header() {
   return (
     <Nav>
-      <Link to="/">
+      <Link onClick={refreshPage} to="/">
         <FaHome size={24} />
       </Link>
-      <Link to="/login">
+      <Link onClick={refreshPage} to="/register">
         <FaUser size={24} />
       </Link>
-      <Link to="youtube.com.br">
+      <Link onClick={refreshPage} to="/login">
         <FaSignInAlt size={24} />
       </Link>
-      {botaoClicado ? "Clicado" : "Não clicado"}
     </Nav>
   );
 }

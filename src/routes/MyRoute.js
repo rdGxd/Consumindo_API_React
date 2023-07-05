@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 // Checando a rota e se o usuário está logado e também se o token do usuário é valido
 export default function MyRoute({ component: Component, isClosed, ...rest }) {
   // Verificando se o usuário está logado
-  const isLoggedIn = true;
+  const isLoggedIn = false;
 
   // Checando se a rota é fechada e se o usuário está logado
   if (isClosed && !isLoggedIn) {
