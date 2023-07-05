@@ -1,18 +1,52 @@
 // AQUI CRIAREMOS TODAS CONFIGURAÇÕES DO SAGA DE TERMINADA FUNÇÃO -> (LOGIN)
 // SAGA É UM MIDDLEWARE
 import { call, put, all, takeLatest } from "redux-saga/effects";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
+import { get } from "lodash";
 
-// import * as actions from "./actions";
+import axios from "../../../services/axios";
+import history from "../../../services/history";
+
+import * as actions from "./actions";
 import * as types from "../types";
 
 // O Saga utiliza funções geradoras
 function* loginRequest({ payload }) {
-  yield console.log("saga", payload);
+  try {
+    // Pegando a senha e o login do payload
+    const { email, password } = payload;
+
+    // Enviando os dados para o back-end
+    const response = yield call(axios.post, "/tokens/", { email, password });
+
+    // Retornando mensagem de sucesso;
+    toast.success("Você fez login");
+
+    // Enviado os dados para a action
+    yield put(actions.loginSuccess({ ...response.data }));
+
+    // Enviando o authorization no headers
+    axios.defaults.headers.Authorization = `Bearer ${response.data.token}`;
+
+    // Redirecionando o usuário para página em que eles estava
+    history.push(payload.prevPath);
+  } catch (error) {
+    toast.error("Usuário ou senha inválidos");
+    yield put(actions.loginFailure());
+  }
+}
+
+// Salvando o token para retornar pelo header
+function persistRehydrate({ payload }) {
+  const token = get(payload, "auth.token", "");
+  if (token) axios.defaults.headers.Authorization = `Bearer ${token}`;
 }
 
 // O all permite você colocar mais de uma ação para escutar
 // O takeLatest você só vai pegar a ultima vez que o usuário clico no botão
 
 // No primeiro parâmetro passamos qual ação ele vai ouvir e no segundo qual função ele vai executar
-export default all([takeLatest(types.LOGIN_REQUEST, loginRequest)]);
+export default all([
+  takeLatest(types.LOGIN_REQUEST, loginRequest),
+  takeLatest(types.PERSIST_REHYDRATE, persistRehydrate),
+]);

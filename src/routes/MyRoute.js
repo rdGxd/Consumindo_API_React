@@ -1,13 +1,14 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 
 // O estado do REDUCE é acessível em toda a aplicação
 
 // Checando a rota e se o usuário está logado e também se o token do usuário é valido
 export default function MyRoute({ component: Component, isClosed, ...rest }) {
   // Verificando se o usuário está logado
-  const isLoggedIn = false;
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   // Checando se a rota é fechada e se o usuário está logado
   if (isClosed && !isLoggedIn) {

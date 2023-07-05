@@ -13,11 +13,21 @@ const initialState = {
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
-    case types.LOGIN_REQUEST: {
-      console.log("REDUCER", action.payload);
-      return state;
+    case types.LOGIN_SUCCESS: {
+      // Pegando os dados do estado atual
+      const newState = { ...state };
+      // Manipulando o estado
+      newState.isLoggedIn = true;
+      newState.token = action.payload.token; // Recebendo o token pelo payload e setando ele
+      newState.user = action.payload.user; // Recebendo o user pelo payload e setando ele
+      return newState;
     }
-
+    case types.LOGIN_FAILURE: {
+      // Copiando o estado inicial
+      const newState = { ...initialState };
+      // Se der qualquer erro o usuário é desconectado e é retornado o estado inicial
+      return newState;
+    }
     default: {
       return state;
     }

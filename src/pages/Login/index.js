@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { isEmail } from "validator";
 import { useDispatch } from "react-redux";
+import { get } from "lodash";
 
 // Meus imports
 import { Container, Form } from "../../styles/GlobalStyles";
 import * as actions from "../../store/modules/auth/actions";
 
-export default function Login() {
+export default function Login(props) {
   // Disparador de ações
   const dispath = useDispatch();
+
+  // Pegando a rota anterior usuário
+  const prevPath = get(props, "location.state.prevPath", "/");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,8 +37,8 @@ export default function Login() {
 
     if (formErrors) return null; // Se houver erros não deixaremos o usuário continuar
 
-    // Enviando o login e a senha;
-    return dispath(actions.loginRequest({ email, password }));
+    // Enviando o login, senha e a rota anterior para o SAGA;
+    return dispath(actions.loginRequest({ email, password, prevPath }));
   };
 
   return (
