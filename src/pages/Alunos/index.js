@@ -30,22 +30,26 @@ export default function Alunos() {
         {/* Retornando os dados dos alunos */}
         {alunos.map((aluno) => (
           <div key={String(aluno.id)}>
-            {/* Tentando pegar a foto do aluno se ele não tiver exibir um ícone */}
+            {/* Tentando pegar a foto do aluno */}
             <ProfilePicture>
               {get(aluno, "Fotos[0].url", false) ? (
                 <img src={aluno.Fotos[0].url} alt="AlunoFoto" />
               ) : (
+                // Exibindo um ícone se ele não tiver foto
                 <FaUserCircle size={36} />
               )}
             </ProfilePicture>
 
+            {/* Exibindo o nome e email do aluno */}
             <span>{aluno.nome}</span>
             <span>{aluno.email}</span>
 
+            {/* Criando botão de Edit e enviando o usuário para a página de edição */}
             <Link to={`/aluno/${aluno.id}/edit`}>
               <FaEdit size={16} />
             </Link>
 
+            {/* Criando botão de Delete */}
             <Link to={`/aluno/${aluno.id}/delete`}>
               <FaWindowClose />
             </Link>
