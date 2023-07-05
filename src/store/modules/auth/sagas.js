@@ -36,10 +36,11 @@ function* loginRequest({ payload }) {
   }
 }
 
-// Salvando o token para retornar pelo header
+// Salvando o token para enviar pelo header
 function persistRehydrate({ payload }) {
   const token = get(payload, "auth.token", "");
-  if (token) axios.defaults.headers.Authorization = `Bearer ${token}`;
+  if (!token) return;
+  axios.defaults.headers.Authorization = `Bearer ${token}`;
 }
 
 // O all permite você colocar mais de uma ação para escutar
