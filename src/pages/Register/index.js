@@ -4,8 +4,7 @@ import { isEmail } from "validator";
 import { get } from "lodash";
 
 // Meus imports
-import { Container } from "../../styles/GlobalStyles";
-import { Form } from "./styled";
+import { Container, Form } from "../../styles/GlobalStyles";
 import axios from "../../services/axios";
 import history from "../../services/history";
 

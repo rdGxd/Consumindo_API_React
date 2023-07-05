@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
 
-import exampleReducer from "./example/reducer";
+import auth from "./auth/reducer";
 
-// AQUI IREMOS IMPORTAR TODOS OS REDUCER PARA DEPOIS REPORTAR
+// AQUI IREMOS IMPORTAR TODOS OS REDUCER PARA DEPOIS EXPORTAR
 
 export default combineReducers({
-  example: exampleReducer,
+  auth,
 });

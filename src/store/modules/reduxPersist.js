@@ -6,9 +6,9 @@ import { persistReducer } from "redux-persist";
 export default (reducers) => {
   const persistedReducer = persistReducer(
     {
-      key: "REACT-BASE-TESTE", // Nome da Aplicação
+      key: "CONSUMO-API", // Nome da Aplicação
       storage,
-      whitelist: ["example"], // Falando qual modulo a gente quer salvar
+      whitelist: ["auth"], // Falando qual modulo a gente quer salvar
     },
     reducers
   );
