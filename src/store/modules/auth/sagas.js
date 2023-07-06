@@ -8,8 +8,7 @@ import axios from "../../../services/axios";
 import history from "../../../services/history";
 
 import * as types from "../types";
-import * as loginActions from "./Actions/loginActions";
-import * as registerActions from "./Actions/registerActions";
+import * as actions from "./actions";
 
 // O Saga utiliza funções geradoras
 function* loginRequest({ payload }) {
@@ -24,7 +23,7 @@ function* loginRequest({ payload }) {
     toast.success("Você fez login");
 
     // Enviado os dados para a action
-    yield put(loginActions.loginSuccess({ ...response.data }));
+    yield put(actions.loginSuccess({ ...response.data }));
 
     // Enviando o authorization no headers
     axios.defaults.headers.Authorization = `Bearer ${response.data.token}`;
@@ -33,7 +32,7 @@ function* loginRequest({ payload }) {
     history.push(payload.prevPath);
   } catch (error) {
     toast.error("Usuário ou senha inválidos");
-    yield put(loginActions.loginFailure());
+    yield put(actions.loginFailure());
   }
 }
 
@@ -61,9 +60,7 @@ function* registerRequest({ payload }) {
       });
       toast.success("Conta alterada com sucesso!");
       // Disparando ação para remover a mensagem de carregando
-      yield put(
-        registerActions.registerUpdatedSuccess({ nome, email, password })
-      );
+      yield put(actions.registerUpdatedSuccess({ nome, email, password }));
     } else {
       yield call(axios.post, "/users", {
         email,
@@ -73,9 +70,7 @@ function* registerRequest({ payload }) {
       toast.success("Cadastrado realizado com sucesso!");
 
       // Disparando ação para remover a mensagem de carregando
-      yield put(
-        registerActions.registerCreatedSuccess({ nome, email, password })
-      );
+      yield put(actions.registerCreatedSuccess({ nome, email, password }));
 
       // Redirecionando o usuário para a tela de login
       history.push("/login");
@@ -87,7 +82,7 @@ function* registerRequest({ payload }) {
     if (status === 401) {
       toast.info("Você precisa fazer login novamente");
       // Deslogando o usuário
-      yield put(loginActions.loginFailure());
+      yield put(actions.loginFailure());
       return history.push("/login");
     }
 
@@ -97,7 +92,7 @@ function* registerRequest({ payload }) {
       toast.error("Erro desconhecido");
     }
 
-    yield put(registerActions.registerFailure());
+    yield put(actions.registerFailure());
   }
 
   return "";

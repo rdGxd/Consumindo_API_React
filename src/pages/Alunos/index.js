@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { get } from "lodash";
 import { FaUserCircle, FaEdit, FaWindowClose } from "react-icons/fa";
+import axios from "../../services/axios";
 
 // Meus imports
 import { Container } from "../../styles/GlobalStyles";
-import axios from "../../services/axios";
 import { AlunoContainer, ProfilePicture } from "./styled";
 import Loading from "../../components/Loading";
 

@@ -6,7 +6,7 @@ import { isEmail } from "validator";
 
 // Meus imports
 import Loading from "../../components/Loading";
-import * as loginActions from "../../store/modules/auth/Actions/loginActions";
+import * as actions from "../../store/modules/auth/actions";
 import { Container, Form } from "../../styles/GlobalStyles";
 
 export default function Login(props) {
@@ -42,7 +42,7 @@ export default function Login(props) {
     if (formErrors) return null; // Se houver erros não deixaremos o usuário continuar
 
     // Enviando o login, senha e a rota anterior para o SAGA;
-    return dispath(loginActions.loginRequest({ email, password, prevPath }));
+    return dispath(actions.loginRequest({ email, password, prevPath }));
   };
 
   return (
