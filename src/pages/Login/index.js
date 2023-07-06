@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { isEmail } from "validator";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { get } from "lodash";
 
 // Meus imports
 import { Container, Form } from "../../styles/GlobalStyles";
 import * as actions from "../../store/modules/auth/actions";
+import Loading from "../../components/Loading";
 
 export default function Login(props) {
   // Disparador de ações
@@ -14,6 +15,9 @@ export default function Login(props) {
 
   // Pegando a rota anterior usuário
   const prevPath = get(props, "location.state.prevPath", "/");
+
+  // Setando isLoading
+  const isLoading = useSelector((state) => state.auth.isLoading);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,6 +47,8 @@ export default function Login(props) {
 
   return (
     <Container>
+      <Loading isLoading={isLoading} />
+
       <h1>Login</h1>
 
       {/* Chamando a função handleSubmit quando o formulário for enviado */}

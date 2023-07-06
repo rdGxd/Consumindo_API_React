@@ -7,11 +7,13 @@ import { get } from "lodash";
 import { Container, Form } from "../../styles/GlobalStyles";
 import axios from "../../services/axios";
 import history from "../../services/history";
+import Loading from "../../components/Loading";
 
 export default function Register() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     // Parando o envio do formulário
@@ -38,6 +40,7 @@ export default function Register() {
 
     if (formErrors) return null; // Se houver erros não deixaremos o usuário continuar
 
+    setIsLoading(true);
     // Tentando cadastrar os usuários
     try {
       await axios.post("/users/", {
@@ -47,11 +50,14 @@ export default function Register() {
       });
       // Avisando que o cadastro foi feito com sucesso
       toast.success("Você fez seu cadastro");
+      setIsLoading(false);
       // Redirecionando o usuário para a página de Login
       history.push("/login");
     } catch (error) {
       const errors = get(error, "response.data.errors", []);
+
       errors.map((err) => toast.error(err));
+      setIsLoading(false);
     }
 
     return null;
@@ -60,6 +66,8 @@ export default function Register() {
   return (
     <Container>
       <h1>Crie sua conta</h1>
+
+      <Loading isLoading={isLoading} />
 
       {/* Chamando a função handleSubmit quando o formulário for enviado */}
       <Form onSubmit={handleSubmit}>

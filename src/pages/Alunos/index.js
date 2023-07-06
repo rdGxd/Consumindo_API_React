@@ -7,23 +7,30 @@ import { FaUserCircle, FaEdit, FaWindowClose } from "react-icons/fa";
 import { Container } from "../../styles/GlobalStyles";
 import axios from "../../services/axios";
 import { AlunoContainer, ProfilePicture } from "./styled";
+import Loading from "../../components/Loading";
 
 export default function Alunos() {
   // useState retorna 2 valores -> Primeiro valor que vc coloco e depois Valor para setar o valor
   const [alunos, setAlunos] = useState([]);
 
+  // Controlando o isLoading
+  const [isLoading, setIsLoading] = useState(false);
+
   // Pegando os dados dos alunos e renderizando assim que a página estiver pronta
   useEffect(() => {
     async function getData() {
+      setIsLoading(true);
       const response = await axios.get("/alunos");
       // Setando o valor de Alunos
       setAlunos(response.data);
+      setIsLoading(false);
     }
     getData();
   }, []);
 
   return (
     <Container>
+      <Loading isLoading={isLoading} />
       <h1>Alunos</h1>
 
       <AlunoContainer>
