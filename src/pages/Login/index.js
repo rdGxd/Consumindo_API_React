@@ -16,7 +16,7 @@ export default function Login(props) {
   // Pegando a rota anterior usuário
   const prevPath = get(props, "location.state.prevPath", "/");
 
-  // Setando isLoading
+  // Setando o isLoading
   const isLoading = useSelector((state) => state.auth.isLoading);
 
   const [email, setEmail] = useState("");

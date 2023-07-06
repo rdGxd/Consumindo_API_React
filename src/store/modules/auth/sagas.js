@@ -46,6 +46,12 @@ function persistRehydrate({ payload }) {
   axios.defaults.headers.Authorization = `Bearer ${token}`;
 }
 
+// Recebendo os dados do register
+function registerRequest({ payload }) {
+  // Salvando os dados
+  const { id, nome, email, password } = payload;
+}
+
 // O all permite você colocar mais de uma ação para escutar
 // O takeLatest você só vai pegar a ultima vez que o usuário clico no botão
 
@@ -53,4 +59,5 @@ function persistRehydrate({ payload }) {
 export default all([
   takeLatest(types.LOGIN_REQUEST, loginRequest),
   takeLatest(types.PERSIST_REHYDRATE, persistRehydrate),
+  takeLatest(types.REGISTER_REQUEST, registerRequest),
 ]);

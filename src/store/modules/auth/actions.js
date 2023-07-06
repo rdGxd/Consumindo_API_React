@@ -4,6 +4,7 @@ import * as types from "../types";
 
 // payload são os dados em sí
 
+// LOGIN ACTIONS
 export function loginRequest(payload) {
   return {
     type: types.LOGIN_REQUEST,
@@ -21,6 +22,28 @@ export function loginSuccess(payload) {
 export function loginFailure(payload) {
   return {
     type: types.LOGIN_FAILURE,
+    payload,
+  };
+}
+
+// REGISTER ACTIONS
+export function registerRequest(payload) {
+  return {
+    type: types.REGISTER_REQUEST,
+    payload,
+  };
+}
+
+export function registerSuccess(payload) {
+  return {
+    type: types.REGISTER_SUCCESS,
+    payload,
+  };
+}
+
+export function registerFailure(payload) {
+  return {
+    type: types.REGISTER_FAILURE,
     payload,
   };
 }
