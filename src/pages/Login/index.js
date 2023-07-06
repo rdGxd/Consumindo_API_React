@@ -6,7 +6,7 @@ import { isEmail } from "validator";
 
 // Meus imports
 import Loading from "../../components/Loading";
-import * as loginActions from "../../store/modules/auth/actions/loginActions";
+import * as loginActions from "../../store/modules/auth/Actions/loginActions";
 import { Container, Form } from "../../styles/GlobalStyles";
 
 export default function Login(props) {

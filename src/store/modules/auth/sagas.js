@@ -8,8 +8,8 @@ import axios from "../../../services/axios";
 import history from "../../../services/history";
 
 import * as types from "../types";
-import * as loginActions from "./actions/loginActions";
-import * as registerActions from "./actions/registerActions";
+import * as loginActions from "./Actions/loginActions";
+import * as registerActions from "./Actions/registerActions";
 
 // O Saga utiliza funções geradoras
 function* loginRequest({ payload }) {
