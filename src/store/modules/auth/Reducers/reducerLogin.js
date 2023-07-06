@@ -1,4 +1,4 @@
-import * as types from "../types";
+import * as types from "../../types";
 
 // AQUI CRIAREMOS O REDUCER DE TERMINADA FUNÇÃO -> (LOGIN)
 
@@ -13,6 +13,7 @@ const initialState = {
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
+    // LOGIN TYPES
     case types.LOGIN_SUCCESS: {
       // Pegando os dados do estado atual
       const newState = { ...state };

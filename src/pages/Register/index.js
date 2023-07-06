@@ -6,7 +6,7 @@ import { isEmail } from "validator";
 // Meus imports
 import Loading from "../../components/Loading";
 import { Container, Form } from "../../styles/GlobalStyles";
-import * as actions from "../../store/modules/auth/actions";
+import * as registerActions from "../../store/modules/auth/Actions/registerActions";
 
 export default function Register() {
   const dispatch = useDispatch();
@@ -56,7 +56,9 @@ export default function Register() {
     if (formErrors) return null; // Se houver erros não deixaremos o usuário continuar
 
     // Enviando os dados para a Action
-    return dispatch(actions.registerRequest({ nome, email, password, id }));
+    return dispatch(
+      registerActions.registerRequest({ nome, email, password, id })
+    );
   };
 
   return (

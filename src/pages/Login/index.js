@@ -1,13 +1,13 @@
+import { get } from "lodash";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { isEmail } from "validator";
-import { useDispatch, useSelector } from "react-redux";
-import { get } from "lodash";
 
 // Meus imports
-import { Container, Form } from "../../styles/GlobalStyles";
-import * as actions from "../../store/modules/auth/actions";
 import Loading from "../../components/Loading";
+import * as loginActions from "../../store/modules/auth/actions/loginActions";
+import { Container, Form } from "../../styles/GlobalStyles";
 
 export default function Login(props) {
   // Disparador de ações
@@ -42,7 +42,7 @@ export default function Login(props) {
     if (formErrors) return null; // Se houver erros não deixaremos o usuário continuar
 
     // Enviando o login, senha e a rota anterior para o SAGA;
-    return dispath(actions.loginRequest({ email, password, prevPath }));
+    return dispath(loginActions.loginRequest({ email, password, prevPath }));
   };
 
   return (

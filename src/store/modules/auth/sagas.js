@@ -1,14 +1,15 @@
 // AQUI CRIAREMOS TODAS CONFIGURAÇÕES DO SAGA DE TERMINADA FUNÇÃO -> (LOGIN)
 // SAGA É UM MIDDLEWARE
-import { call, put, all, takeLatest } from "redux-saga/effects";
-import { toast } from "react-toastify";
 import { get } from "lodash";
+import { toast } from "react-toastify";
+import { all, call, put, takeLatest } from "redux-saga/effects";
 
 import axios from "../../../services/axios";
 import history from "../../../services/history";
 
-import * as actions from "./actions";
 import * as types from "../types";
+import * as loginActions from "./actions/loginActions";
+import * as registerActions from "./actions/registerActions";
 
 // O Saga utiliza funções geradoras
 function* loginRequest({ payload }) {
@@ -23,7 +24,7 @@ function* loginRequest({ payload }) {
     toast.success("Você fez login");
 
     // Enviado os dados para a action
-    yield put(actions.loginSuccess({ ...response.data }));
+    yield put(loginActions.loginSuccess({ ...response.data }));
 
     // Enviando o authorization no headers
     axios.defaults.headers.Authorization = `Bearer ${response.data.token}`;
@@ -32,7 +33,7 @@ function* loginRequest({ payload }) {
     history.push(payload.prevPath);
   } catch (error) {
     toast.error("Usuário ou senha inválidos");
-    yield put(actions.loginFailure());
+    yield put(loginActions.loginFailure());
   }
 }
 
@@ -47,9 +48,59 @@ function persistRehydrate({ payload }) {
 }
 
 // Recebendo os dados do register
-function registerRequest({ payload }) {
+function* registerRequest({ payload }) {
   // Salvando os dados
   const { id, nome, email, password } = payload;
+
+  try {
+    if (id) {
+      yield call(axios.put, "/users", {
+        email,
+        nome,
+        password: password || undefined,
+      });
+      toast.success("Conta alterada com sucesso!");
+      // Disparando ação para remover a mensagem de carregando
+      yield put(
+        registerActions.registerUpdatedSuccess({ nome, email, password })
+      );
+    } else {
+      yield call(axios.post, "/users", {
+        email,
+        nome,
+        password,
+      });
+      toast.success("Cadastrado realizado com sucesso!");
+
+      // Disparando ação para remover a mensagem de carregando
+      yield put(
+        registerActions.registerCreatedSuccess({ nome, email, password })
+      );
+
+      // Redirecionando o usuário para a tela de login
+      history.push("/login");
+    }
+  } catch (error) {
+    const errors = get(error, "response.data.errors", []); // Pegando os erros
+    const status = get(error, "response.status", 0); // Pegando o status do erro
+
+    if (status === 401) {
+      toast.info("Você precisa fazer login novamente");
+      // Deslogando o usuário
+      yield put(loginActions.loginFailure());
+      return history.push("/login");
+    }
+
+    if (errors.length > 0) {
+      errors.map((err) => toast.error(err));
+    } else {
+      toast.error("Erro desconhecido");
+    }
+
+    yield put(registerActions.registerFailure());
+  }
+
+  return "";
 }
 
 // O all permite você colocar mais de uma ação para escutar
