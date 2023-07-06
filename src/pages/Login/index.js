@@ -47,9 +47,9 @@ export default function Login(props) {
 
   return (
     <Container>
-      <Loading isLoading={isLoading} />
-
       <h1>Login</h1>
+
+      <Loading isLoading={isLoading} />
 
       {/* Chamando a função handleSubmit quando o formulário for enviado */}
       <Form onSubmit={handleSubmit}>

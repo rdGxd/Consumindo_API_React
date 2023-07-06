@@ -14,13 +14,17 @@ import { Nav } from "./styled";
 import * as actions from "../../store/modules/auth/actions";
 
 export default function Header() {
+  // Disparador de ações
   const dispatch = useDispatch();
+
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
-  // Deslogando o usuário
   const handleLogout = (e) => {
+    // Cancelando o evento padrão
     e.preventDefault();
+    // Deslogando ousuário
     dispatch(actions.loginFailure());
+    // Redirecionando o usuário para página inicial
     history.push("/");
   };
 
@@ -45,7 +49,7 @@ export default function Header() {
         </Link>
       )}
 
-      {/* Se o usuário tiver logado  e colocando uma */}
+      {/* Se o usuário estiver logado vamos exibir uma COR VERDE no header */}
       {isLoggedIn && <FaCircle size={24} color="#66ff33" />}
     </Nav>
   );

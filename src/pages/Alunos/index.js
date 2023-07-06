@@ -36,32 +36,42 @@ export default function Alunos() {
 
   // Função para exibir a opção de delete
   const handleDeleteAsk = (e) => {
+    // Cancelando o evento padrão
     e.preventDefault();
+    // Acessando o próximo irmão do elemento atual
     const exclamation = e.currentTarget.nextSibling;
+    // Exibindo o ícone de delete
     exclamation.setAttribute("display", "block");
+    // Removendo o ícone anterior
     e.currentTarget.remove();
   };
 
   // Função para deletar
   const handleDelete = async (e, id, index) => {
     try {
+      // Exibindo a tela de carregamento
       setIsLoading(true);
+      // Enviando os dados para delete
       await axios.delete(`/alunos/${id}`);
       // Copiando os alunos atuais
       const novosAlunos = [...alunos];
-      // Apagando um aluno
+      // Apagando o aluno selecionado da lista
       novosAlunos.splice(index, 1);
-      // Setando novos Alunos
+      // Setando novos Alunos e exibindo na lista atualizada
       setAlunos(novosAlunos);
+      // Removendo tela de carregamento
       setIsLoading(false);
     } catch (error) {
-      const status = get(error, "response.status", []);
+      const status = get(error, "response.status", []); // Capturando erros
 
       if (status === 401) {
+        // Exibindo erro
         toast.error("Você precisa fazer login");
       } else {
+        // Exibindo erro
         toast.error("Ocorreu um erro ao excluir aluno");
       }
+      // Removendo tela de carregamento
       setIsLoading(false);
     }
   };
@@ -69,6 +79,7 @@ export default function Alunos() {
   return (
     <Container>
       <Loading isLoading={isLoading} />
+
       <h1>Alunos</h1>
 
       <AlunoContainer>

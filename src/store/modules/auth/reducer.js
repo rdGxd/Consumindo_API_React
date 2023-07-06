@@ -19,7 +19,7 @@ export default (state = initialState, action = {}) => {
       // Pegando os dados do estado atual
       const newState = { ...state };
       // Manipulando o estado
-      newState.isLoggedIn = true;
+      newState.isLoggedIn = true; // Exibindo a imagem de Carregamento
       newState.token = action.payload.token; // Recebendo o token pelo payload e setando ele
       newState.user = action.payload.user; // Recebendo o user pelo payload e setando ele
       newState.isLoading = false; // Removendo o Carregamento

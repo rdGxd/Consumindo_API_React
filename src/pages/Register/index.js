@@ -29,7 +29,7 @@ export default function Register() {
   }, [emailStored, id, nomeStored]);
 
   const handleSubmit = async (e) => {
-    // Parando o envio do formulário
+    // Cancelando o evento padrão
     e.preventDefault();
     let formErrors = false;
 

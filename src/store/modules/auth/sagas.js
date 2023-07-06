@@ -53,15 +53,18 @@ function* registerRequest({ payload }) {
 
   try {
     if (id) {
+      // Atualizando os dados do usuário
       yield call(axios.put, "/users", {
         email,
         nome,
         password: password || undefined,
       });
       toast.success("Conta alterada com sucesso!");
+
       // Disparando ação para remover a mensagem de carregando
       yield put(actions.registerUpdatedSuccess({ nome, email, password }));
     } else {
+      // Cadastrando o usuário
       yield call(axios.post, "/users", {
         email,
         nome,
@@ -83,15 +86,18 @@ function* registerRequest({ payload }) {
       toast.info("Você precisa fazer login novamente");
       // Deslogando o usuário
       yield put(actions.loginFailure());
+      // Redirecionando o usuário para a tela de login
       return history.push("/login");
     }
 
+    // Verificando se tem algum erro
     if (errors.length > 0) {
       errors.map((err) => toast.error(err));
     } else {
       toast.error("Erro desconhecido");
     }
 
+    // Deslogando o usuário
     yield put(actions.registerFailure());
   }
 
