@@ -1,4 +1,5 @@
 import * as types from "../types";
+import axios from "../../../services/axios";
 
 // AQUI CRIAREMOS O REDUCER DE TERMINADA FUNÇÃO
 
@@ -26,6 +27,8 @@ export default (state = initialState, action = {}) => {
     }
 
     case types.LOGIN_FAILURE: {
+      // Apagando o token de autorização ao deslogar
+      delete axios.defaults.headers.Authorization;
       // Copiando o estado inicial
       const newState = { ...initialState };
       // Se der qualquer erro o usuário é desconectado e é retornado o estado inicial

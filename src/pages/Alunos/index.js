@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { get } from "lodash";
-import { FaUserCircle, FaEdit, FaWindowClose } from "react-icons/fa";
+import {
+  FaUserCircle,
+  FaEdit,
+  FaWindowClose,
+  FaExclamation,
+} from "react-icons/fa";
+import { toast } from "react-toastify";
 import axios from "../../services/axios";
 
 // Meus imports
@@ -28,6 +34,38 @@ export default function Alunos() {
     getData();
   }, []);
 
+  // Função para exibir a opção de delete
+  const handleDeleteAsk = (e) => {
+    e.preventDefault();
+    const exclamation = e.currentTarget.nextSibling;
+    exclamation.setAttribute("display", "block");
+    e.currentTarget.remove();
+  };
+
+  // Função para deletar
+  const handleDelete = async (e, id, index) => {
+    try {
+      setIsLoading(true);
+      await axios.delete(`/alunos/${id}`);
+      // Copiando os alunos atuais
+      const novosAlunos = [...alunos];
+      // Apagando um aluno
+      novosAlunos.splice(index, 1);
+      // Setando novos Alunos
+      setAlunos(novosAlunos);
+      setIsLoading(false);
+    } catch (error) {
+      const status = get(error, "response.status", []);
+
+      if (status === 401) {
+        toast.error("Você precisa fazer login");
+      } else {
+        toast.error("Ocorreu um erro ao excluir aluno");
+      }
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Container>
       <Loading isLoading={isLoading} />
@@ -35,7 +73,7 @@ export default function Alunos() {
 
       <AlunoContainer>
         {/* Retornando os dados dos alunos */}
-        {alunos.map((aluno) => (
+        {alunos.map((aluno, index) => (
           <div key={String(aluno.id)}>
             {/* Tentando pegar a foto do aluno */}
             <ProfilePicture>
@@ -57,9 +95,16 @@ export default function Alunos() {
             </Link>
 
             {/* Criando botão de Delete */}
-            <Link to={`/aluno/${aluno.id}/delete`}>
+            <Link onClick={handleDeleteAsk} to={`/aluno/${aluno.id}/delete`}>
               <FaWindowClose />
             </Link>
+
+            <FaExclamation
+              size={16}
+              display="none"
+              cursor="pointer"
+              onClick={(e) => handleDelete(e, aluno.id, index)}
+            />
           </div>
         ))}
       </AlunoContainer>
