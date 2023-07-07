@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
-import { isEmail } from "validator";
+import { isEmail, isInt, isFloat } from "validator";
 
 // Meus imports
 import { Container } from "../../styles/GlobalStyles";
 import { Form } from "./styled";
+import Loading from "../../components/Loading";
+import axios from "../../services/axios";
+import history from "../../services/history";
 
 export default function Aluno({ match }) {
   // Pegando o ID do aluno
@@ -19,6 +22,44 @@ export default function Aluno({ match }) {
   const [idade, setIdade] = useState("");
   const [peso, setPeso] = useState("");
   const [altura, setAltura] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Checando se tem um ID
+    if (!id) return;
+
+    const getData = async () => {
+      try {
+        setIsLoading(true);
+        // Pegando as informações do aluno
+        const { data } = await axios.get(`/aluno/${id}`);
+
+        // Pegando a foto do Aluno
+        const Foto = get(data, "Fotos[0].url", "");
+
+        // Exibindo as informações do usuário
+        setNome(data.nome);
+        setSobrenome(data.sobrenome);
+        setEmail(data.email);
+        setIdade(data.idade);
+        setPeso(data.peso);
+        setAltura(data.altura);
+
+        setIsLoading(false);
+        console.log(Foto);
+      } catch (err) {
+        setIsLoading(false);
+        const status = get(err, "response.status", 0);
+        const errors = get(err, "response.data.errors", []);
+
+        // Requisição inválida
+        if (status === 400) errors.map((error) => toast.error(error));
+        history.push("/");
+      }
+    };
+
+    getData();
+  }, [id]);
 
   // Pegando o evento do formulário
   const handleSubmit = (e) => {
@@ -26,39 +67,52 @@ export default function Aluno({ match }) {
     e.preventDefault();
     let formErrors = false;
 
-    // Validando formulário
-    if (nome.length < 3 || nome.length > 55) {
+    // Validando nome
+    if (nome.length < 3 || nome.length > 255) {
       formErrors = true;
-      return toast.error("O nome deve conter entre 3 a 55 caracteres");
+      return toast.error("O nome deve conter entre 3 a 255 caracteres");
     }
 
+    // Validando sobrenome
+    if (sobrenome.length < 3 || sobrenome.length > 255) {
+      formErrors = true;
+      return toast.error("O sobrenome deve conter entre 3 a 255 caracteres");
+    }
+
+    // Validando email
     if (!isEmail(email)) {
       formErrors = true;
-      return toast.error("Email inválido");
+      return toast.error("E-mail inválido");
     }
 
-    if (idade < 10 || idade > 100) {
+    // Validando idade
+    if (!isInt(String(idade))) {
       formErrors = true;
-      return toast.error("Insira uma idade valida");
+      return toast.error("Idade precisa ser um número inteiro");
     }
 
-    if (!peso) {
+    // Validando peso
+    if (!isFloat(String(peso))) {
       formErrors = true;
-      return toast.error("Insira um peso");
+      return toast.error("Peso precisa ser um número com ponto flutuante");
     }
 
-    if (!altura) {
+    // Validando altura
+    if (!isFloat(String(altura))) {
       formErrors = true;
-      return toast.error("Insira uma altura");
+      return toast.error("Altura precisa ser um número com ponto flutuante");
     }
 
-    if (formErrors) return null;
+    // Se houver algum erro não será enviado
+    if (formErrors) return false;
 
     return true;
   };
 
   return (
     <Container>
+      <Loading isLoading={isLoading} />
+
       <h1>{id ? "Editar aluno" : "Novo aluno"}</h1>
 
       <Form onSubmit={(e) => handleSubmit(e)}>
@@ -110,7 +164,6 @@ export default function Aluno({ match }) {
           Peso:
           <input
             type="number"
-            step="0.01"
             value={peso}
             onChange={(e) => setPeso(e.target.value)}
             name="Peso"
@@ -123,7 +176,6 @@ export default function Aluno({ match }) {
           <input
             type="number"
             value={altura}
-            step="0.01"
             onChange={(e) => setAltura(e.target.value)}
             name="Altura"
             id="Altura"
