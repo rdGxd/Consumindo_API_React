@@ -3,6 +3,8 @@ import { get } from "lodash";
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import { isEmail, isInt, isFloat } from "validator";
+import { useDispatch } from "react-redux";
+import * as actions from "../../store/modules/auth/actions";
 
 // Meus imports
 import { Container } from "../../styles/GlobalStyles";
@@ -12,6 +14,8 @@ import axios from "../../services/axios";
 import history from "../../services/history";
 
 export default function Aluno({ match }) {
+  const dispatch = useDispatch();
+
   // Pegando o ID do aluno
   const id = get(match, "params.id", null);
 
@@ -28,11 +32,14 @@ export default function Aluno({ match }) {
     // Checando se tem um ID
     if (!id) return;
 
+    // Pegando todos os dados do usuário
     const getData = async () => {
       try {
+        // Exibindo imagem de carregamento
         setIsLoading(true);
+
         // Pegando as informações do aluno
-        const { data } = await axios.get(`/aluno/${id}`);
+        const { data } = await axios.get(`/alunos/${id}`);
 
         // Pegando a foto do Aluno
         const Foto = get(data, "Fotos[0].url", "");
@@ -45,14 +52,19 @@ export default function Aluno({ match }) {
         setPeso(data.peso);
         setAltura(data.altura);
 
+        // Removendo imagem de carregamento
         setIsLoading(false);
         console.log(Foto);
       } catch (err) {
+        // Removendo imagem de carregamento
         setIsLoading(false);
+        // Pegando o status do erro
         const status = get(err, "response.status", 0);
+
+        // Pegando a mensagem do erro
         const errors = get(err, "response.data.errors", []);
 
-        // Requisição inválida
+        // Se a requisição inválida redireciona para a HOME
         if (status === 400) errors.map((error) => toast.error(error));
         history.push("/");
       }
@@ -62,7 +74,7 @@ export default function Aluno({ match }) {
   }, [id]);
 
   // Pegando o evento do formulário
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     // Parando o envio do formulário
     e.preventDefault();
     let formErrors = false;
@@ -105,6 +117,61 @@ export default function Aluno({ match }) {
 
     // Se houver algum erro não será enviado
     if (formErrors) return false;
+
+    try {
+      // Exibindo imagem de carregamento
+      setIsLoading(true);
+
+      if (id) {
+        // Editando usuário
+        await axios.put(`/alunos/${id}`, {
+          nome,
+          sobrenome,
+          email,
+          idade,
+          peso,
+          altura,
+        });
+        toast.success("Aluno(a) alterado(a) com sucesso");
+      } else {
+        // Criando usuário
+        const { data } = await axios.post(`/alunos/`, {
+          nome,
+          sobrenome,
+          email,
+          idade,
+          peso,
+          altura,
+        });
+        toast.success("Aluno(a) criado(a) com sucesso");
+
+        // Redirecionando o usuário para página de edit
+        history.push(`/aluno/${data.id}/edit`);
+      }
+
+      // Removendo imagem de carregamento
+      setIsLoading(false);
+    } catch (err) {
+      // Removendo imagem de carregamento
+      setIsLoading(false);
+
+      // Pegando o status do erro
+      const status = get(err, "response.status", 0);
+      const data = get(err, "response.data", {});
+
+      // Pegando a Mensagem de erro
+      const errors = get(data, "errors", []);
+
+      // Retornando a mensagem de erro
+      if (errors.length > 0) {
+        errors.map((error) => toast.error(error));
+      } else {
+        toast.error("Erro desconhecido");
+      }
+
+      // Se vier algum erro do back-end com status 401 você é desconectado
+      if (status === 401) dispatch(actions.loginFailure());
+    }
 
     return true;
   };
