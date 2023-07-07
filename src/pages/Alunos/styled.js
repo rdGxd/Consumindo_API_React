@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 // Criando e exportando o CSS
 
@@ -23,4 +24,10 @@ export const ProfilePicture = styled.div`
     height: 36px;
     border-radius: 50%;
   }
+`;
+
+// Estilizando um component
+export const NovoAluno = styled(Link)`
+  display: block;
+  padding: 20px 0 10px 0;
 `;

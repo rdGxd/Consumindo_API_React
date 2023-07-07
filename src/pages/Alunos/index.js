@@ -12,7 +12,7 @@ import axios from "../../services/axios";
 
 // Meus imports
 import { Container } from "../../styles/GlobalStyles";
-import { AlunoContainer, ProfilePicture } from "./styled";
+import { AlunoContainer, ProfilePicture, NovoAluno } from "./styled";
 import Loading from "../../components/Loading";
 
 export default function Alunos() {
@@ -81,6 +81,8 @@ export default function Alunos() {
       <Loading isLoading={isLoading} />
 
       <h1>Alunos</h1>
+
+      <NovoAluno to="/aluno">Novo aluno</NovoAluno>
 
       <AlunoContainer>
         {/* Retornando os dados dos alunos */}
