@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { get } from "lodash";
 import PropTypes from "prop-types";
+import { FaEdit, FaUserCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { isEmail, isInt, isFloat } from "validator";
 import { useDispatch } from "react-redux";
-import * as actions from "../../store/modules/auth/actions";
+import { Link } from "react-router-dom";
 
 // Meus imports
+import * as actions from "../../store/modules/auth/actions";
 import { Container } from "../../styles/GlobalStyles";
-import { Form } from "./styled";
+import { Form, ProfilePicture, Title } from "./styled";
 import Loading from "../../components/Loading";
 import axios from "../../services/axios";
 import history from "../../services/history";
@@ -26,6 +28,7 @@ export default function Aluno({ match }) {
   const [idade, setIdade] = useState("");
   const [peso, setPeso] = useState("");
   const [altura, setAltura] = useState("");
+  const [foto, setFoto] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -51,10 +54,10 @@ export default function Aluno({ match }) {
         setIdade(data.idade);
         setPeso(data.peso);
         setAltura(data.altura);
+        setFoto(Foto);
 
         // Removendo imagem de carregamento
         setIsLoading(false);
-        console.log(Foto);
       } catch (err) {
         // Removendo imagem de carregamento
         setIsLoading(false);
@@ -180,74 +183,65 @@ export default function Aluno({ match }) {
     <Container>
       <Loading isLoading={isLoading} />
 
-      <h1>{id ? "Editar aluno" : "Novo aluno"}</h1>
+      <Title>{id ? "Editar aluno" : "Novo aluno"}</Title>
+
+      {id && (
+        <ProfilePicture>
+          {foto ? <img src={foto} alt={nome} /> : <FaUserCircle size={180} />}
+          <Link to={`/fotos/${id}`}>
+            <FaEdit size={24} />
+          </Link>
+        </ProfilePicture>
+      )}
 
       <Form onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="Nome">
-          Nome:
-          <input
-            type="text"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            name="Nome"
-            id="Nome"
-          />
-        </label>
+        <input
+          type="text"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          name="Nome"
+          id="Nome"
+        />
 
-        <label htmlFor="Sobrenome">
-          Sobrenome:
-          <input
-            type="text"
-            value={sobrenome}
-            onChange={(e) => setSobrenome(e.target.value)}
-            name="Sobrenome"
-            id="Sobrenome"
-          />
-        </label>
+        <input
+          type="text"
+          value={sobrenome}
+          onChange={(e) => setSobrenome(e.target.value)}
+          name="Sobrenome"
+          id="Sobrenome"
+        />
 
-        <label htmlFor="Email">
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            name="Email"
-            id="Email"
-          />
-        </label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          name="Email"
+          id="Email"
+        />
 
-        <label htmlFor="Idade">
-          Idade:
-          <input
-            type="number"
-            value={idade}
-            onChange={(e) => setIdade(e.target.value)}
-            name="Idade"
-            id="Idade"
-          />
-        </label>
+        <input
+          type="number"
+          value={idade}
+          onChange={(e) => setIdade(e.target.value)}
+          name="Idade"
+          id="Idade"
+        />
 
-        <label htmlFor="Peso">
-          Peso:
-          <input
-            type="number"
-            value={peso}
-            onChange={(e) => setPeso(e.target.value)}
-            name="Peso"
-            id="Peso"
-          />
-        </label>
+        <input
+          type="number"
+          value={peso}
+          onChange={(e) => setPeso(e.target.value)}
+          name="Peso"
+          id="Peso"
+        />
 
-        <label htmlFor="Altura">
-          Altura:
-          <input
-            type="number"
-            value={altura}
-            onChange={(e) => setAltura(e.target.value)}
-            name="Altura"
-            id="Altura"
-          />
-        </label>
+        <input
+          type="number"
+          value={altura}
+          onChange={(e) => setAltura(e.target.value)}
+          name="Altura"
+          id="Altura"
+        />
 
         <button type="submit">Enviar</button>
       </Form>
